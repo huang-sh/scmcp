@@ -36,16 +36,20 @@ Install from PyPI
 ```
 pip install scanpy-mcp
 ```
+you can test it by running
+```
+scmcp run
+```
 
 
-You configure MCP servers like this:
+Refer to the following configuration in your MCP client:
 
 ```
 "mcpServers": {
   "mcp-server-docker": {
-    "command": "uvx",
+    "command": "scmcp",
     "args": [
-      "mcp-server-docker"
+      "run"
     ]
   }
 }
