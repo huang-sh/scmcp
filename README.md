@@ -30,6 +30,7 @@ A demo showing scRNA-Seq cell cluster analysis in a AI client Cherry Studio usin
   <iframe src="https://www.loom.com/embed/5b8fcbf34226447da0027c056acdda86" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></iframe>
 </div>
 
+https://www.loom.com/embed/5b8fcbf34226447da0027c056acdda86
 
 ## 🏎️ Quickstart
 
