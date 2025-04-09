@@ -178,6 +178,37 @@ def fig_to_bytes(fig, format='png'):
         logger.error(f"Error converting figure to bytes: {e}")
         raise e
 
+
+def savefig(fig, file, format="png"):
+    try:
+        import matplotlib.pyplot as plt
+        
+        if hasattr(fig, 'figure'):  # if Axes
+            fig.figure.savefig(buf, format=format)
+        else:  # if Figure 
+            fig.savefig(buf, format=format)
+            
+
+        return file
+    except Exception as e:
+        logger.error(f"Error save figure: {e}")
+        raise e
+
+
+def fig_rename(func):
+        fig_dir = Path(os.getcwd()) / "figures"
+        fig_path = fig_dir / f"{func[3:]}.png"
+        try:
+            os.rename(fig_dir/f"{func[3:]}_.png", fig_path)
+        except FileNotFoundError:
+            print(f"The file {old_file} does not exist")
+        except FileExistsError:
+            print(f"The file {new_file} already exists")
+        except PermissionError:
+            print("You don't have permission to rename this file")   
+        return fig_path
+
+
 def run_pl_func(adata, func, arguments):
     """
     Execute a Scanpy plotting function with the given arguments.
@@ -203,14 +234,14 @@ def run_pl_func(adata, func, arguments):
     kwargs = {k: arguments.get(k) for k in parameters if k in arguments}    
 
     if "title" not in parameters:
-        kwargs.pop("title", False)
+        kwargs.pop("title", False)    
 
     fig_kwargs = {"show": False,  "save":".png"}
     kwargs.pop("show", False)
     kwargs.pop("return_fig", True)
     try:
         fig = pl_func[func](adata, **kwargs, **fig_kwargs)
-        fig_path = Path(os.getcwd()) / f"figures/{func[3:]}.png"
+        fig_path = fig_rename(func)
         return fig_path 
     except Exception as e:
         raise e
