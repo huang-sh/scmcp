@@ -26,11 +26,7 @@ You can use scanpy-mcp in most AI clients, plugins, or agent frameworks that sup
 
 A demo showing scRNA-Seq cell cluster analysis in a AI client Cherry Studio using natural language based on scanpy-mcp
 
-<div style="position: relative; padding-bottom: 56.25%; height: 0;">
-  <iframe src="https://www.loom.com/embed/5b8fcbf34226447da0027c056acdda86" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></iframe>
-</div>
-
-https://www.loom.com/embed/5b8fcbf34226447da0027c056acdda86
+https://github.com/user-attachments/assets/93a8fcd8-aa38-4875-a147-a5eeff22a559
 
 ## 🏎️ Quickstart
 
