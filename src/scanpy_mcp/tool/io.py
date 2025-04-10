@@ -1,7 +1,8 @@
+import inspect
 import mcp.types as types
 import scanpy as sc
 from ..schema.io import *
-
+from ..util import add_op_log
 
 read_h5ad = types.Tool(
     name="read_h5ad",
@@ -63,9 +64,14 @@ def run_read_func(func, arguments):
     if func not in io_func:
         raise ValueError(f"不支持的函数: {func}")
     
-    field_keys = io_tools.get(func).inputSchema["properties"].keys()
-    kwargs = {k: arguments.get(k) for k in field_keys if k in arguments}
-    adata = io_func[func](**kwargs)
+    run_func = io_func[func]
+    parameters = inspect.signature(run_func).parameters
+    kwargs = {k: arguments.get(k) for k in parameters if k in arguments}
+    try:        
+        adata = run_func(**kwargs)
+        add_op_log(adata, run_func, kwargs)
+    except Exception as e:
+        raise ValueError(f"Running: {str(e)}")
     return adata
 
 
@@ -77,7 +83,7 @@ def run_write_func(adata, func, arguments):
     kwargs = {k: arguments.get(k) for k in field_keys if k in arguments}
     
     if func == "write_h5ad":
-        adata.write_h5ad(**kwargs)
+        del adata.uns["operation"]
         return {"filename": kwargs["filename"], "msg": "success to save file"}
     else:
         kwargs["adata"] = adata

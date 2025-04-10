@@ -7,6 +7,7 @@ import inspect
 from ..schema.pp import *
 import os
 from ..logging_config import setup_logger
+from ..util import add_op_log
 
 logger = setup_logger(log_file=os.environ.get("SCANPY_MCP_LOG_FILE", None))
 
@@ -127,6 +128,7 @@ def run_pp_func(adata, func, arguments):
         kwargs["inplace"] = True
     try:
         res = run_func(adata, **kwargs)
+        add_op_log(adata, run_func, kwargs)
     except KeyError as e:
         raise KeyError(f"Can not foud {e} column in adata.obs or adata.var")
     except Exception as e:

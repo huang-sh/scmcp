@@ -1,8 +1,10 @@
+import inspect
 import mcp.types as types
 import scanpy as sc
 from ..schema.tl import *
 from ..logging_config import setup_logger
 import os
+from ..util import add_op_log
 
 logger = setup_logger(log_file=os.environ.get("SCANPY_MCP_LOG_FILE", None))
 
@@ -162,6 +164,13 @@ tl_tools = {
 def run_tl_func(adata, func, arguments):
     if func not in tl_func:
         raise ValueError(f"Unsupported function: {func}")
-    field_keys = tl_tools.get(func).inputSchema["properties"].keys()
-    kwargs = {k: arguments.get(k) for k in field_keys if k in arguments}    
-    return tl_func[func](adata, **kwargs)
+    run_func = tl_func[func]
+    parameters = inspect.signature(run_func).parameters
+    kwargs = {k: arguments.get(k) for k in parameters if k in arguments}    
+    try:
+        res = run_func(adata, **kwargs)
+        add_op_log(adata, run_func, kwargs)
+    except Exception as e:
+        logger.error(f"Error running function {func}: {e}")
+        raise
+    return 

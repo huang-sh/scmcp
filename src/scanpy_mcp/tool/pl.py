@@ -1,4 +1,5 @@
 import os
+import inspect
 from functools import partial
 import mcp.types as types
 import scanpy as sc
@@ -6,7 +7,8 @@ from ..schema.pl import *
 import os
 from pathlib import Path
 from ..logging_config import setup_logger
-import inspect
+from ..util import add_op_log
+
 
 logger = setup_logger(log_file=os.environ.get("SCANPY_MCP_LOG_FILE", None))
 
@@ -199,11 +201,11 @@ def fig_rename(func):
         fig_dir = Path(os.getcwd()) / "figures"
         fig_path = fig_dir / f"{func[3:]}.png"
         try:
-            os.rename(fig_dir/f"{func[3:]}_.png", fig_path)
+            os.rename(fig_dir/f'{func[3:]}_.png', fig_path)
         except FileNotFoundError:
-            print(f"The file {old_file} does not exist")
+            print(f"The file {fig_dir/f'{func[3:]}_.png'} does not exist")
         except FileExistsError:
-            print(f"The file {new_file} already exists")
+            print(f"The file {fig_path} already exists")
         except PermissionError:
             print("You don't have permission to rename this file")   
         return fig_path
@@ -235,13 +237,13 @@ def run_pl_func(adata, func, arguments):
 
     if "title" not in parameters:
         kwargs.pop("title", False)    
-
-    fig_kwargs = {"show": False,  "save":".png"}
-    kwargs.pop("show", False)
     kwargs.pop("return_fig", True)
+    kwargs["show"] = False
+    kwargs["save"] = ".png"
     try:
-        fig = pl_func[func](adata, **kwargs, **fig_kwargs)
+        fig = run_func(adata, **kwargs)
         fig_path = fig_rename(func)
+        add_op_log(adata, run_func, kwargs)
         return fig_path 
     except Exception as e:
         raise e

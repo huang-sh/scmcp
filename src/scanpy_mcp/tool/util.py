@@ -1,7 +1,10 @@
+import inspect
 from ..schema.util import *
 import mcp.types as types
 import os
+from ..util import add_op_log
 from ..logging_config import setup_logger
+
 logger = setup_logger(log_file=os.environ.get("SCANPY_MCP_LOG_FILE", None))
 
 
@@ -88,7 +91,13 @@ def run_util_func(adata, func, arguments):
     # pp_logger.info(f"{func} at {arguments}")
     if func not in util_func:
         raise ValueError(f"不支持的函数: {func}")
-    field_keys = util_tools.get(func).inputSchema["properties"].keys()
-    kwargs = {k: arguments.get(k) for k in field_keys if k in arguments}
-
-    return util_func[func](adata, **kwargs)
+    run_func = util_func[func]
+    parameters = inspect.signature(run_func).parameters
+    kwargs = {k: arguments.get(k) for k in parameters if k in arguments}    
+    try:
+        res = run_func(adata, **kwargs)
+        add_op_log(adata, run_func, kwargs)
+    except Exception as e:
+        logger.error(f"Error running function {func}: {e}")
+        raise e
+    return res
