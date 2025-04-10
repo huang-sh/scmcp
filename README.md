@@ -6,7 +6,7 @@ An MCP server for scRNA-Seq analysis software Scanpy with natural language!
 
 - IO module like read and write scRNA-Seq data with natural language
 - Preprocessing module,like filtering, quality control, normalization, scaling, highly-variable genes, PCA, Neighbors,...
-- Tool module, like clustering, differential expression, trajectory inference, marker gene identification, etc.
+- Tool module, like clustering, differential expression etc.
 - Plotting module, like violin, heatmap, dotplot
 
 ## ❓ Who is this for?
@@ -46,7 +46,7 @@ Refer to the following configuration in your MCP client:
 
 ```
 "mcpServers": {
-  "mcp-server-docker": {
+  "scanpy-mcp": {
     "command": "scmcp",
     "args": [
       "run"
