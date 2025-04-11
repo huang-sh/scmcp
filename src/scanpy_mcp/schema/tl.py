@@ -308,7 +308,7 @@ class LeidenModel(JSONParsingModel):
     )
     
     flavor: Literal['leidenalg', 'igraph'] = Field(
-        default='leidenalg',
+        default='igraph',
         description="Which package's implementation to use."
     )
     
