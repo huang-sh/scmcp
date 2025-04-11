@@ -189,8 +189,6 @@ def savefig(fig, file, format="png"):
             fig.figure.savefig(buf, format=format)
         else:  # if Figure 
             fig.savefig(buf, format=format)
-            
-
         return file
     except Exception as e:
         logger.error(f"Error save figure: {e}")
