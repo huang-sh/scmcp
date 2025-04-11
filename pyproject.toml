@@ -19,3 +19,8 @@ build-backend = "hatchling.build"
 
 [project.scripts]
 scmcp = "scanpy_mcp.cli:run"
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3.4"
+]
