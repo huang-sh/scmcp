@@ -41,7 +41,7 @@ you can test it by running
 scmcp run
 ```
 
-
+#### run scnapy-server locally
 Refer to the following configuration in your MCP client:
 
 ```
@@ -53,6 +53,19 @@ Refer to the following configuration in your MCP client:
     ]
   }
 }
+```
+
+#### run scnapy-server remotely
+Refer to the following configuration in your MCP client:
+
+run it in your server
+```
+scmcp run --transport sse --port 8000
+```
+
+Then configure your MCP client, like this:
+```
+http://localhost:8000/sse
 ```
 
 ## 🤝 Contributing
