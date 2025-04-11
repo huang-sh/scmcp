@@ -15,7 +15,10 @@ def set_fig_path(func):
     fig_dir = Path(os.getcwd()) / "figures"
     fig_path = fig_dir / f"{func[3:]}.png"
     try:
-        os.rename(fig_dir/f'{func[3:]}_.png', fig_path)
+        if func == "pl_rank_genes_groups_dotplot":
+            os.rename(fig_dir/'dotplot_.png', fig_path)
+        else:
+            os.rename(fig_dir/f'{func[3:]}_.png', fig_path)
     except FileNotFoundError:
         print(f"The file {fig_dir/f'{func[3:]}_.png'} does not exist")
     except FileExistsError:
