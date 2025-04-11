@@ -3,6 +3,7 @@ name = "scanpy-mcp"
 version = "0.1.1"
 description = "An MCP server for scRNA-Seq analysis software Scanpy with natural language!"
 readme = "README.md"
+license = { file = "LICENSE" }
 authors = [
     { name = "shuang", email = "hsh-me@outlook.com" }
 ]
