@@ -158,7 +158,7 @@ pl_tools = {
     # "spatial": spatial,
     # "rank_genes_groups": rank_genes_groups,
     "pl_rank_genes_groups_dotplot": pl_rank_genes_groups_dotplot,  # Add tool mapping
-    "pl_clustermap": pl_clustermap,
+    # "pl_clustermap": pl_clustermap,
     "pl_highly_variable_genes": pl_highly_variable_genes,
     "pl_pca_variance_ratio": pl_pca_variance_ratio,
 }
