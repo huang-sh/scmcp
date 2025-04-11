@@ -27,6 +27,8 @@ def parse_arguments():
                         help='Specify transport type. Options: stdio, sse. Default: stdio')
     run_parser.add_argument('-p', "--port", type=int, default=8000,
                         help='Port for SSE transport. Default: 8000')
+    run_parser.add_argument('--host', type=str, default="127.0.0.1",
+                        help='Host address for SSE transport. Default: 127.0.0.1')
     
     # Set default subcommand to run
     parser.set_defaults(command='run')
@@ -45,6 +47,7 @@ def run_cli():
         module = getattr(args, 'module', "all")
         transport = getattr(args, 'transport', "stdio")
         port = getattr(args, 'port', 8000)
+        host = getattr(args, 'host', "127.0.0.1")
         
         if log_file is not None:
             os.environ['SCANPY_MCP_LOG_FILE'] = log_file
@@ -55,6 +58,10 @@ def run_cli():
             os.environ['SCANPY_MCP_DATA'] = data
         else:
             os.environ['SCANPY_MCP_DATA'] = ""
+
+        os.environ['SCANPY_MCP_TRANSPORT'] = transport
+        os.environ['SCANPY_MCP_HOST'] = host
+        os.environ['SCANPY_MCP_PORT'] = str(port)
             
         # Set module environment variable
         os.environ['SCANPY_MCP_MODULE'] = module

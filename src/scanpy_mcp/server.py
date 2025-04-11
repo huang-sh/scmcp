@@ -10,7 +10,7 @@ from .tool.pp import pp_tools, run_pp_func
 from .tool.util import util_tools, run_util_func
 from .tool.tl import tl_tools, run_tl_func
 from .tool.pl import pl_tools, run_pl_func
-
+from .util import get_figure
 from .logging_config import setup_logger
 
 logger = setup_logger(log_file=os.environ.get("SCANPY_MCP_LOG_FILE", None))
@@ -166,6 +166,7 @@ def create_sse_app(port=8000):
         routes=[
             Route("/sse", endpoint=handle_sse),
             Mount("/messages/", app=sse.handle_post_message),
+            Route("/figures/{figure_name}", endpoint=get_figure),
         ]
     )
     

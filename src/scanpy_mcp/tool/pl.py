@@ -7,7 +7,7 @@ from ..schema.pl import *
 import os
 from pathlib import Path
 from ..logging_config import setup_logger
-from ..util import add_op_log
+from ..util import add_op_log, set_fig_path
 
 
 logger = setup_logger(log_file=os.environ.get("SCANPY_MCP_LOG_FILE", None))
@@ -20,7 +20,7 @@ pl_pca_tool = types.Tool(
 
 pl_umap_tool = types.Tool(
     name="pl_umap",
-    description="Scatter plot in UMAP basis. default visualization plot for cell cluster if not specified by user",
+    description="UMAP Scatter plot. default visualization plot for cell cluster if not specified by user",
     inputSchema=UMAPModel.model_json_schema(),
 )
 
@@ -195,18 +195,6 @@ def savefig(fig, file, format="png"):
         raise e
 
 
-def fig_rename(func):
-        fig_dir = Path(os.getcwd()) / "figures"
-        fig_path = fig_dir / f"{func[3:]}.png"
-        try:
-            os.rename(fig_dir/f'{func[3:]}_.png', fig_path)
-        except FileNotFoundError:
-            print(f"The file {fig_dir/f'{func[3:]}_.png'} does not exist")
-        except FileExistsError:
-            print(f"The file {fig_path} already exists")
-        except PermissionError:
-            print("You don't have permission to rename this file")   
-        return fig_path
 
 
 def run_pl_func(adata, func, arguments):
@@ -240,7 +228,7 @@ def run_pl_func(adata, func, arguments):
     kwargs["save"] = ".png"
     try:
         fig = run_func(adata, **kwargs)
-        fig_path = fig_rename(func)
+        fig_path = set_fig_path(func)
         add_op_log(adata, run_func, kwargs)
         return fig_path 
     except Exception as e:
