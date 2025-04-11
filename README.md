@@ -22,7 +22,7 @@ You can use scanpy-mcp in most AI clients, plugins, or agent frameworks that sup
 - Plugins, like Cline
 - Agent frameworks, like Agno 
 
-## Demo
+## 🎬 Demo
 
 A demo showing scRNA-Seq cell cluster analysis in a AI client Cherry Studio using natural language based on scanpy-mcp
 
