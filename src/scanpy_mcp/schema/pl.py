@@ -337,7 +337,7 @@ class BaseMatrixModel(BaseVisualizationModel):
     """基础矩阵可视化模型，包含所有矩阵可视化工具共享的字段"""
     
     var_names: Union[List[str], Mapping[str, List[str]]] = Field(
-        ...,  # Required field
+        default=None,
         description="var_names should be a valid subset of adata.var_names or a mapping where the key is used as label to group the values."
     )    
     groupby: Union[str, List[str]] = Field(
