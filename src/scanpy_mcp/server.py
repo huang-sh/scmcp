@@ -3,6 +3,7 @@ import mcp.types as types
 from mcp.server import NotificationOptions, Server
 import mcp.server.stdio
 import os
+import uvicorn
 import scanpy as sc
 from .tool.io import io_tools, run_io_func
 from .tool.pp import pp_tools, run_pp_func
@@ -103,7 +104,13 @@ async def call_tool(
             )
         ]
 
-async def run():
+
+        
+## Run server with stdio transport
+async def run_stdio():
+    """
+    Run server with stdio transport
+    """
     async with mcp.server.stdio.stdio_server() as (read_stream, write_stream):
         await server.run(
             read_stream,
@@ -117,3 +124,65 @@ async def run():
                 ),
             ),
         )
+
+## Create application using SSE transport
+def create_sse_app(port=8000):
+    """
+    Create application using SSE transport
+    
+    Parameters:
+        port: Server port number
+        
+    Returns:
+        Starlette application instance
+    """
+    from starlette.applications import Starlette
+    from starlette.routing import Route, Mount
+    from starlette.requests import Request
+    from mcp.server.sse import SseServerTransport
+    
+    # Create SSE transport object
+    sse = SseServerTransport("/messages/")
+
+    # Define SSE handler function
+    async def handle_sse(request):
+        async with sse.connect_sse(
+            request.scope, request.receive, request._send
+        ) as streams:
+            await server.run(
+                streams[0], streams[1], 
+                InitializationOptions(
+                    server_name=f"scanpy-mcp-{MODULE}",
+                    server_version="0.1.2",
+                    capabilities=server.get_capabilities(
+                        notification_options=NotificationOptions(),
+                        experimental_capabilities={},
+                    ),
+                )
+            )
+
+    # Create Starlette application
+    starlette_app = Starlette(
+        routes=[
+            Route("/sse", endpoint=handle_sse),
+            Mount("/messages/", app=sse.handle_post_message),
+        ]
+    )
+    
+    return starlette_app
+
+# Keep the original run function as a compatibility layer
+async def run(transport_type="stdio", port=8000):
+    """
+    Unified server run function (for backward compatibility)
+    
+    Parameters:
+        transport_type: Transport type, either "stdio" or "sse"
+        port: Port number when using sse transport
+    """
+    if transport_type == "stdio":
+        await run_stdio()
+    elif transport_type == "sse":
+        return create_sse_app(port)
+    else:
+        raise ValueError(f"Unsupported transport type: {transport_type}")
