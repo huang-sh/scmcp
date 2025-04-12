@@ -1,4 +1,7 @@
+import os
 from pathlib import Path
+from starlette.responses import FileResponse, Response
+
 
 def add_op_log(adata, func, kwargs):
     if "operation" not in adata.uns:
@@ -35,15 +38,9 @@ def set_fig_path(func):
         return fig_path
 
 
-from starlette.applications import Starlette
-from starlette.responses import FileResponse, Response
-from starlette.routing import Route
-import os
-from io import BytesIO
-try:
-    from PIL import Image, ImageDraw
-except ImportError:
-    print("请安装Pillow: pip install pillow")
+
+
+
 
 
 async def get_figure(request):
