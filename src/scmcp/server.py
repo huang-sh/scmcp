@@ -13,7 +13,7 @@ from .tool.pl import pl_tools, run_pl_func
 from .util import get_figure
 from .logging_config import setup_logger
 
-logger = setup_logger(log_file=os.environ.get("SC_MCP_LOG_FILE", None))
+logger = setup_logger(log_file=os.environ.get("SCMCP_LOG_FILE", None))
 
 class AdataState:
     def __init__(self):

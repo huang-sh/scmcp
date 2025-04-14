@@ -768,7 +768,6 @@ class TSNEModel(BaseEmbeddingModel):
     """Input schema for the TSNE plotting tool."""
     # 所有需要的字段已经在 BaseEmbeddingModel 中定义
 
-
 # 重构 DiffusionMapModel
 class DiffusionMapModel(BaseEmbeddingModel):
     """Input schema for the diffusion map plotting tool."""

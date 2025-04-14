@@ -8,7 +8,7 @@ from ..logging_config import setup_logger
 
 
 
-logger = setup_logger(log_file=os.environ.get("SCANPY_MCP_LOG_FILE", None))
+logger = setup_logger(log_file=os.environ.get("SCMCP_LOG_FILE", None))
 
 read_h5ad = types.Tool(
     name="read_h5ad",

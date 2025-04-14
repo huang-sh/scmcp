@@ -29,11 +29,11 @@ def set_fig_path(func):
     except PermissionError:
         print("You don't have permission to rename this file")
 
-    if os.environ.get("SCANPY_MCP_TRANSPORT") == "stdio":
+    if os.environ.get("SCMCP_TRANSPORT") == "stdio":
         return fig_path
     else:
-        host = os.environ.get("SCANPY_MCP_HOST")
-        port = os.environ.get("SCANPY_MCP_PORT")
+        host = os.environ.get("SCMCP_HOST")
+        port = os.environ.get("SCMCP_PORT")
         fig_path = f"http://{host}:{port}/figures/{func[3:]}.png"
         return fig_path
 

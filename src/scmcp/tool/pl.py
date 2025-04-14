@@ -10,7 +10,7 @@ from ..logging_config import setup_logger
 from ..util import add_op_log, set_fig_path
 
 
-logger = setup_logger(log_file=os.environ.get("SCANPY_MCP_LOG_FILE", None))
+logger = setup_logger(log_file=os.environ.get("SCMCP_LOG_FILE", None))
 
 pl_pca_tool = types.Tool(
     name="pl_pca",

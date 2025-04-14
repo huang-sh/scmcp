@@ -5,7 +5,7 @@ import os
 from ..util import add_op_log
 from ..logging_config import setup_logger
 
-logger = setup_logger(log_file=os.environ.get("SCANPY_MCP_LOG_FILE", None))
+logger = setup_logger(log_file=os.environ.get("SCMCP_LOG_FILE", None))
 
 
 mark_var_tool = types.Tool(
