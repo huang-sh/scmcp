@@ -13,11 +13,11 @@ from .tool.pl import pl_tools, run_pl_func
 from .util import get_figure
 from .logging_config import setup_logger
 
-logger = setup_logger(log_file=os.environ.get("SCANPY_MCP_LOG_FILE", None))
+logger = setup_logger(log_file=os.environ.get("SC_MCP_LOG_FILE", None))
 
 class AdataState:
     def __init__(self):
-        data_path = os.environ.get("SCANPY_MCP_DATA", None)        
+        data_path = os.environ.get("SC_MCP_DATA", None)        
         if data_path:
             self.adata = sc.read_h5ad(data_path)
             logger.info(f"Data path: {data_path}")
@@ -26,7 +26,7 @@ class AdataState:
         
 ads = AdataState()
 
-MODULE = os.environ.get("SCANPY_MCP_MODULE", "all")       
+MODULE = os.environ.get("SC_MCP_MODULE", "all")       
 
 server = Server(f"scanpy-mcp-{MODULE}")
 
@@ -116,7 +116,7 @@ async def run_stdio():
             read_stream,
             write_stream,
             InitializationOptions(
-                server_name=f"scanpy-mcp-{MODULE}",
+                server_name=f"scmcp-{MODULE}",
                 server_version="0.1.0",
                 capabilities=server.get_capabilities(
                     notification_options=NotificationOptions(),
@@ -152,8 +152,8 @@ def create_sse_app(port=8000):
             await server.run(
                 streams[0], streams[1], 
                 InitializationOptions(
-                    server_name=f"scanpy-mcp-{MODULE}",
-                    server_version="0.1.2",
+                    server_name=f"sc-mcp-{MODULE}",
+                    server_version="0.1.0",
                     capabilities=server.get_capabilities(
                         notification_options=NotificationOptions(),
                         experimental_capabilities={},

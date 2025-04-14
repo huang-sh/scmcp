@@ -2,7 +2,7 @@ import logging
 import sys
 import os
 
-def setup_logger(name="scanpy-mcp-server", log_file=None):
+def setup_logger(name="sc-mcp-server", log_file=None):
     """
     配置并返回一个日志记录器
     

@@ -1,6 +1,6 @@
-# Scanpy MCP server
+# SCMCP
 
-An MCP server for scRNA-Seq analysis software Scanpy with natural language!
+An MCP server for scRNA-Seq analysis  with natural language!
 
 ## 🪩 What can it do?
 
@@ -16,7 +16,7 @@ An MCP server for scRNA-Seq analysis software Scanpy with natural language!
 
 ## 🌐 Where to use it?
 
-You can use scanpy-mcp in most AI clients, plugins, or agent frameworks that support the MCP:
+You can use scmcp in most AI clients, plugins, or agent frameworks that support the MCP:
 
 - AI clients, like Cherry Studio
 - Plugins, like Cline
@@ -24,7 +24,7 @@ You can use scanpy-mcp in most AI clients, plugins, or agent frameworks that sup
 
 ## 🎬 Demo
 
-A demo showing scRNA-Seq cell cluster analysis in a AI client Cherry Studio using natural language based on scanpy-mcp
+A demo showing scRNA-Seq cell cluster analysis in a AI client Cherry Studio using natural language based on scmcp
 
 https://github.com/user-attachments/assets/93a8fcd8-aa38-4875-a147-a5eeff22a559
 
@@ -34,7 +34,7 @@ https://github.com/user-attachments/assets/93a8fcd8-aa38-4875-a147-a5eeff22a559
 
 Install from PyPI
 ```
-pip install scanpy-mcp
+pip install scmcp
 ```
 you can test it by running
 ```
@@ -46,7 +46,7 @@ Refer to the following configuration in your MCP client:
 
 ```
 "mcpServers": {
-  "scanpy-mcp": {
+  "scmcp": {
     "command": "scmcp",
     "args": [
       "run"

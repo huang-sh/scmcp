@@ -7,5 +7,5 @@ import asyncio
 from .server import run
 
 if __name__ == "__main__":
-    print("Starting scanpy-mcp server...")
+    print("Starting scmcp server...")
     asyncio.run(run())
