@@ -104,5 +104,5 @@ def test_run_io_func():
 
 def test_read_text():
     file = os.path.join(os.path.dirname(__file__), "data", "test.txt")
-    adata = read_text_func(file, delimiter=",", first_column_names=None, first_column_obs=False) 
+    adata = read_text_func(file, delimiter="comma", first_column_names=True, first_column_obs=False) 
     assert "A1CF" in adata.var_names
