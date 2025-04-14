@@ -1,4 +1,4 @@
-from scanpy_mcp.util import add_op_log
+from scmcp.util import add_op_log
 import anndata
 import numpy as np
 from functools import partial

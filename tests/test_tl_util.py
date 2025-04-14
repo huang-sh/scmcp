@@ -1,7 +1,7 @@
 import pytest
 import numpy as np
 import anndata
-from scanpy_mcp.tool.util import run_util_func, util_func
+from scmcp.tool.util import run_util_func, util_func
 from unittest.mock import patch, MagicMock
 
 

@@ -3,7 +3,7 @@ import numpy as np
 import anndata
 import os
 import scanpy as sc
-from scanpy_mcp.tool.pp import run_pp_func, pp_func
+from scmcp.tool.pp import run_pp_func, pp_func
 from unittest.mock import patch, MagicMock
 
 

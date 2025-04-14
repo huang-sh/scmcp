@@ -11,7 +11,7 @@ import sys
 
 def parse_arguments():
     """Parse command line arguments"""
-    parser = argparse.ArgumentParser(description='Scanpy MCP Server')
+    parser = argparse.ArgumentParser(description='SCMCP Server')
     subparsers = parser.add_subparsers(dest='command', help='Available commands')
     
     # Add run subcommand
@@ -50,21 +50,21 @@ def run_cli():
         host = getattr(args, 'host', "127.0.0.1")
         
         if log_file is not None:
-            os.environ['SCANPY_MCP_LOG_FILE'] = log_file
+            os.environ['SCMCP_LOG_FILE'] = log_file
         else:
-            os.environ['SCANPY_MCP_LOG_FILE'] = ""
+            os.environ['SCMCP_LOG_FILE'] = ""
             
         if data is not None:
-            os.environ['SCANPY_MCP_DATA'] = data
+            os.environ['SCMCP_DATA'] = data
         else:
-            os.environ['SCANPY_MCP_DATA'] = ""
+            os.environ['SCMCP_DATA'] = ""
 
-        os.environ['SCANPY_MCP_TRANSPORT'] = transport
-        os.environ['SCANPY_MCP_HOST'] = host
-        os.environ['SCANPY_MCP_PORT'] = str(port)
+        os.environ['SCMCP_TRANSPORT'] = transport
+        os.environ['SCMCP_HOST'] = host
+        os.environ['SCMCP_PORT'] = str(port)
             
         # Set module environment variable
-        os.environ['SCANPY_MCP_MODULE'] = module
+        os.environ['SCMCP_MODULE'] = module
         
         try:
             if transport == "stdio":

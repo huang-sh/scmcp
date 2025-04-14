@@ -2,7 +2,7 @@ import pytest
 import numpy as np
 import anndata
 import os
-from scanpy_mcp.tool.io import run_io_func, run_read_func, run_write_func, io_func, io_tools, read_text_func
+from scmcp.tool.io import run_io_func, run_read_func, run_write_func, io_func, io_tools, read_text_func
 from unittest.mock import patch, MagicMock, mock_open
 
 
@@ -87,7 +87,7 @@ def test_run_io_func():
     adata = anndata.AnnData(X=np.array([[1, 2], [3, 4]]))
     
     # Test case 1: Calling write function
-    with patch("scanpy_mcp.tool.io.run_write_func") as mock_write_func:
+    with patch("scmcp.tool.io.run_write_func") as mock_write_func:
         mock_write_func.return_value = {"filename": "test.h5ad", "msg": "success"}
         result = run_io_func(adata, "write_h5ad", {"filename": "test.h5ad"})
         mock_write_func.assert_called_once_with(adata, "write_h5ad", {"filename": "test.h5ad"})
@@ -95,7 +95,7 @@ def test_run_io_func():
     
     # Test case 2: Calling read function
     mock_adata = anndata.AnnData(X=np.array([[5, 6], [7, 8]]))
-    with patch("scanpy_mcp.tool.io.run_read_func") as mock_read_func:
+    with patch("scmcp.tool.io.run_read_func") as mock_read_func:
         mock_read_func.return_value = mock_adata
         result = run_io_func(None, "read_h5ad", {"filename": "test.h5ad"})
         mock_read_func.assert_called_once_with("read_h5ad", {"filename": "test.h5ad"})

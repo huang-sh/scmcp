@@ -3,7 +3,7 @@ import numpy as np
 import anndata
 import os
 import scanpy as sc
-from scanpy_mcp.tool.tl import run_tl_func, tl_func
+from scmcp.tool.tl import run_tl_func, tl_func
 from unittest.mock import patch, MagicMock
 
 
