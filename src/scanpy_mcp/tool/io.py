@@ -76,7 +76,8 @@ def read_text_func(filename, delimiter=None, first_column_names=None, first_colu
         logger.info(f"sc.read_text({filename}, delimiter={delimiter}, first_column_names={first_column_names})")
         adata = sc.read_text(filename, delimiter=delimiter, first_column_names=first_column_names)
     except Exception as e:
-        logger.error(f"Error converting figure to bytes: {e}")
+        logger.error(f"Error read_text {filename}: {e}")
+        raise ValueError(f"Error read_text {filename}: {e}")
     if not first_column_obs:
         adata = adata.T
     return adata
