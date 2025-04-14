@@ -116,6 +116,8 @@ class Read10xMtxInput(JSONParsingModel):
         return v
 
 
+
+
 class WriteModel(JSONParsingModel):
     """Input schema for the write tool."""
     filename: str = Field(
@@ -180,3 +182,22 @@ class WriteH5adModel(JSONParsingModel):
             if item not in valid_options:
                 raise ValueError(f"as_dense only supports {valid_options}, got {item}")
         return v
+
+
+class ReadTextInput(JSONParsingModel):
+    """Input schema for the read_text tool."""
+    filename: str = Field(
+        description="Path to the text file (.txt, .tab, .csv) to read"
+    )
+    delimiter: Optional[Literal["tab", "comma", "space", "semicolon", "colon"]] = Field(
+        default=None,
+        description="Delimiter that separates data in text files. Options: 'tab' (\t), 'comma' (,), 'space' ( ), 'semicolon' (;), 'colon' (:). If None, splits by arbitrary whitespace."
+    )
+    first_column_names: Optional[bool] = Field(
+        default=None,
+        description="Assume the first column stores row names."
+    )
+    first_column_obs: bool = Field(
+        default=True,
+        description="If True, assume the first column stores observations(cell or barcode) names. If False, the data will be transposed."
+    )

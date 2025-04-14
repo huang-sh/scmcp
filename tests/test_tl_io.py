@@ -1,7 +1,8 @@
 import pytest
 import numpy as np
 import anndata
-from scanpy_mcp.tool.io import run_io_func, run_read_func, run_write_func, io_func, io_tools
+import os
+from scanpy_mcp.tool.io import run_io_func, run_read_func, run_write_func, io_func, io_tools, read_text_func
 from unittest.mock import patch, MagicMock, mock_open
 
 
@@ -99,3 +100,9 @@ def test_run_io_func():
         result = run_io_func(None, "read_h5ad", {"filename": "test.h5ad"})
         mock_read_func.assert_called_once_with("read_h5ad", {"filename": "test.h5ad"})
         assert result is mock_adata
+
+
+def test_read_text():
+    file = os.path.join(os.path.dirname(__file__), "data", "test.txt")
+    adata = read_text_func(file, delimiter=",", first_column_names=None, first_column_obs=False) 
+    assert "A1CF" in adata.var_names
