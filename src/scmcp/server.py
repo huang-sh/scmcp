@@ -10,6 +10,7 @@ from .tool.pp import pp_tools, run_pp_func
 from .tool.util import util_tools, run_util_func
 from .tool.tl import tl_tools, run_tl_func
 from .tool.pl import pl_tools, run_pl_func
+from .tool.ccc import ccc_tools, run_ccc_func
 from .util import get_figure
 from .logging_config import setup_logger
 
@@ -50,6 +51,7 @@ async def list_tools() -> list[types.Tool]:
             *tl_tools.values(),
             *pl_tools.values(),
             *util_tools.values(),
+            *ccc_tools.values(),
         ]
     return tools
 
@@ -87,6 +89,8 @@ async def call_tool(
         elif name in util_tools.keys():
             
             res = run_util_func(ads.adata, name, arguments)
+        elif name in ccc_tools.keys():            
+            res = run_ccc_func(ads.adata, name, arguments)            
 
         output = str(res) if res is not None else str(ads.adata)
         return [
