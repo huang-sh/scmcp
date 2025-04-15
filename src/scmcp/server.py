@@ -5,13 +5,8 @@ import mcp.server.stdio
 import os
 import uvicorn
 import scanpy as sc
-from .tool.io import io_tools, run_io_func
-from .tool.pp import pp_tools, run_pp_func
-from .tool.util import util_tools, run_util_func
-from .tool.tl import tl_tools, run_tl_func
-from .tool.pl import pl_tools, run_pl_func
-from .tool.ccc import ccc_tools, run_ccc_func
 from .util import get_figure
+from .tool import *
 from .logging_config import setup_logger
 
 logger = setup_logger(log_file=os.environ.get("SCMCP_LOG_FILE", None))
@@ -121,7 +116,7 @@ async def run_stdio():
             write_stream,
             InitializationOptions(
                 server_name=f"scmcp-{MODULE}",
-                server_version="0.1.0",
+                server_version="0.1.1",
                 capabilities=server.get_capabilities(
                     notification_options=NotificationOptions(),
                     experimental_capabilities={},
@@ -157,7 +152,7 @@ def create_sse_app(port=8000):
                 streams[0], streams[1], 
                 InitializationOptions(
                     server_name=f"sc-mcp-{MODULE}",
-                    server_version="0.1.0",
+                    server_version="0.1.1",
                     capabilities=server.get_capabilities(
                         notification_options=NotificationOptions(),
                         experimental_capabilities={},
