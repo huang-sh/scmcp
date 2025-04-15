@@ -868,3 +868,74 @@ class RankGenesGroupsDotplotModel(BaseMatrixModel):
         """Validate n_genes"""
         # n_genes can be positive or negative, so no validation needed
         return v
+
+
+
+class EmbeddingModel(BaseEmbeddingModel):
+    """Input schema for the embedding plotting tool."""
+    
+    basis: str = Field(
+        ...,  # Required field
+        description="Name of the obsm basis to use."
+    )
+    
+    mask_obs: Optional[str] = Field(
+        default=None,
+        description="A boolean array or a string mask expression to subset observations."
+    )
+    
+    arrows_kwds: Optional[dict] = Field(
+        default=None,
+        description="Passed to matplotlib's quiver function for drawing arrows."
+    )
+    
+    scale_factor: Optional[float] = Field(
+        default=None,
+        description="Scale factor for the plot."
+    )
+    
+    cmap: Optional[str] = Field(
+        default=None,
+        description="Color map to use for continuous variables. Overrides color_map."
+    )
+    
+    na_color: str = Field(
+        default="lightgray",
+        description="Color to use for null or masked values."
+    )
+    
+    na_in_legend: bool = Field(
+        default=True,
+        description="Whether to include null values in the legend."
+    )
+    
+    outline_width: Tuple[float, float] = Field(
+        default=(0.3, 0.05),
+        description="Width of the outline for highlighted points."
+    )
+    
+    outline_color: Tuple[str, str] = Field(
+        default=("black", "white"),
+        description="Color of the outline for highlighted points."
+    )
+    
+    colorbar_loc: Optional[str] = Field(
+        default="right",
+        description="Location of the colorbar."
+    )
+    
+    hspace: float = Field(
+        default=0.25,
+        description="Height space between panels."
+    )
+    
+    wspace: Optional[float] = Field(
+        default=None,
+        description="Width space between panels."
+    )
+    
+    title: Optional[Union[str, List[str]]] = Field(
+        default=None,
+        description="Title for the plot."
+    )
+    

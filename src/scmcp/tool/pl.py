@@ -18,17 +18,6 @@ pl_pca_tool = types.Tool(
     inputSchema=PCAModel.model_json_schema(),
 )
 
-pl_umap_tool = types.Tool(
-    name="pl_umap",
-    description="UMAP Scatter plot. default visualization plot for cell cluster if not specified by user",
-    inputSchema=UMAPModel.model_json_schema(),
-)
-
-pl_tsne = types.Tool(
-    name="pl_tsne",
-    description="Plot t-SNE embedding of cells.",
-    inputSchema=TSNEModel.model_json_schema(),
-)
 
 diffmap = types.Tool(
     name="diffmap",
@@ -81,6 +70,13 @@ pl_scatter = types.Tool(
     inputSchema=EnhancedScatterModel.model_json_schema(),
 )
 
+pl_embedding = types.Tool(
+    name="pl_embedding",
+    description="Scatter plot for user specified embedding basis (e.g. umap, tsne, etc).",
+    inputSchema=EmbeddingModel.model_json_schema(),
+)
+
+
 embedding_density = types.Tool(
     name="embedding_density",
     description="Plot the density of cells in an embedding.",
@@ -120,11 +116,11 @@ pl_pca_variance_ratio = types.Tool(
     inputSchema=PCAVarianceRatioModel.model_json_schema(),
 )
 
+
 # Map tool names to Scanpy plotting functions
 pl_func = {
     "pl_pca": sc.pl.pca,
-    "pl_umap": sc.pl.umap,
-    "pl_tsne": sc.pl.tsne,
+    "pl_embedding": sc.pl.embedding,  # Add the new embedding function
     "diffmap": sc.pl.diffmap,
     "pl_violin": sc.pl.violin,
     "pl_stacked_violin": sc.pl.stacked_violin,
@@ -144,8 +140,7 @@ pl_func = {
 # Map tool names to tool objects
 pl_tools = {
     "pl_pca": pl_pca_tool,
-    "pl_umap": pl_umap_tool,
-    "pl_tsne": pl_tsne,
+    "pl_embedding": pl_embedding,  # Add the new embedding tool
     # "diffmap": diffmap,
     "pl_violin": pl_violin,
     "pl_stacked_violin": pl_stacked_violin,
@@ -228,7 +223,7 @@ def run_pl_func(adata, func, arguments):
     kwargs["save"] = ".png"
     try:
         fig = run_func(adata, **kwargs)
-        fig_path = set_fig_path(func)
+        fig_path = set_fig_path(func, **kwargs)
         add_op_log(adata, run_func, kwargs)
         return fig_path 
     except Exception as e:
