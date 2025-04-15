@@ -176,22 +176,6 @@ def fig_to_bytes(fig, format='png'):
         raise e
 
 
-def savefig(fig, file, format="png"):
-    try:
-        import matplotlib.pyplot as plt
-        
-        if hasattr(fig, 'figure'):  # if Axes
-            fig.figure.savefig(buf, format=format)
-        else:  # if Figure 
-            fig.savefig(buf, format=format)
-        return file
-    except Exception as e:
-        logger.error(f"Error save figure: {e}")
-        raise e
-
-
-
-
 def run_pl_func(adata, func, arguments):
     """
     Execute a Scanpy plotting function with the given arguments.
