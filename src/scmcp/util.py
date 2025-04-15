@@ -9,6 +9,8 @@ def add_op_log(adata, func, kwargs):
         adata.uns["operation"]["adata"] = []
     if hasattr(func, "__name__"):
         func_name = func.__name__
+    elif hasattr(func, "__class__"):
+        func_name = func.__class__.__name__        
     else:
         func_name = func.func.__name__
     adata.uns["operation"]["adata"].append({func_name: kwargs})
@@ -45,6 +47,17 @@ def set_fig_path(func, **kwargs):
         return fig_path
 
 
+def savefig(fig, file, format="png"):
+    try:
+        if hasattr(fig, 'figure'):  # if Axes
+            fig.figure.savefig(file, format=format)
+        elif hasattr(fig, 'save'):  # for plotnine.ggplot.ggplot
+            fig.save(file, format=format)
+        else:  # if Figure 
+            fig.savefig(file, format=format)
+        return file
+    except Exception as e:
+        raise e
 
 
 
