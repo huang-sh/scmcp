@@ -7,12 +7,19 @@ def add_op_log(adata, func, kwargs):
     if "operation" not in adata.uns:
         adata.uns["operation"] = {}
         adata.uns["operation"]["adata"] = []
-    if hasattr(func, "__name__"):
+    
+    # Handle different function types to get the function name
+    if hasattr(func, "func") and hasattr(func.func, "__name__"):
+        # For partial functions, use the original function name
+        func_name = func.func.__name__
+    elif hasattr(func, "__name__"):
         func_name = func.__name__
     elif hasattr(func, "__class__"):
-        func_name = func.__class__.__name__        
+        func_name = func.__class__.__name__
     else:
-        func_name = func.func.__name__
+        # Fallback for other cases
+        func_name = str(func)
+    
     adata.uns["operation"]["adata"].append({func_name: kwargs})
 
 
