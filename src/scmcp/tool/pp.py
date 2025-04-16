@@ -117,7 +117,8 @@ pp_tools = {
 }
 
 
-def run_pp_func(adata, func, arguments):
+def run_pp_func(ads, func, arguments):
+    adata = ads.adata_dic[ads.active]
     if func not in pp_func:
         raise ValueError(f"不支持的函数: {func}")
     

@@ -176,7 +176,7 @@ def fig_to_bytes(fig, format='png'):
         raise e
 
 
-def run_pl_func(adata, func, arguments):
+def run_pl_func(ads, func, arguments):
     """
     Execute a Scanpy plotting function with the given arguments.
     
@@ -193,6 +193,7 @@ def run_pl_func(adata, func, arguments):
     -------
     The result of the plotting function.
     """
+    adata = ads.adata_dic[ads.active]
     if func not in pl_func:
         raise ValueError(f"Unsupported function: {func}")
 

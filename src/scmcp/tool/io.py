@@ -67,10 +67,18 @@ def write_func(adata, func, arguments):
     return {"filename": kwargs["filename"], "msg": "success to save file"}
 
 
-def run_io_func(adata, func, arguments):
+def run_io_func(ads, func, arguments):
     if func == "read_tool":
-        logger.info(arguments)
-        return read_func(**arguments)
+        adata_id = f"adata{len(ads.adata_dic)}"
+        if arguments.get("sampleid", None) is not None:
+            adata_id = arguments["sampleid"]
+        else:
+            adata_id = f"adata{len(ads.adata_dic)}"
+        res = read_func(**arguments)
+        ads.active = adata_id
+        ads.adata_dic[adata_id] = res
+        return res
     else:
+        adata = ads.adata_dic[ads.active]
         return write_func(adata, func, arguments)
 

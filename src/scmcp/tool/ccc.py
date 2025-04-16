@@ -106,14 +106,13 @@ ccc_tools = {
 }
 
 
-def run_ccc_func(adata, func, arguments):
+def run_ccc_func(ads, func, arguments):
     
     if func not in ccc_func:
         raise ValueError(f"不支持的函数: {func}")
     run_func = ccc_func[func]
-    
+    adata = ads.adata_dic[ads.active]
     try:
-        # 修复：使用正确的变量名
         logger.info(f"Running function {func} with arguments {arguments}")
         
         if func == "ls_ccc_method":

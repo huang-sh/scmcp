@@ -71,7 +71,7 @@ class ConcatAdataModel(JSONParsingModel):
     )
     label: Optional[str] = Field(
         default=None,
-        description="Column in axis annotation (i.e. .obs or .var) to place batch information in. If None, no column is added."
+        description="label different adata, Column in axis annotation (i.e. .obs or .var) to place batch information in. "
     )
     keys: Optional[List[str]] = Field(
         default=None,

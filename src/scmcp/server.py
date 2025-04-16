@@ -8,7 +8,7 @@ import scanpy as sc
 from .util import get_figure
 from .tool import *
 from .logging_config import setup_logger
-from . import __version__  # 导入版本号
+from . import __version__  
 
 logger = setup_logger(log_file=os.environ.get("SCMCP_LOG_FILE", None))
 
@@ -63,33 +63,17 @@ async def call_tool(
     try:
         logger.info(f"Running {name} with {arguments}")
         if name in io_tools.keys():            
-            res = run_io_func(ads.adata_dic.get(ads.active, None), name, arguments)
-            adata_id = f"adata{len(ads.adata_dic)}"
-            if name == "read_tool":
-                if arguments.get("sampleid", None) is not None:
-                    adata_id = arguments["sampleid"]
-                else:
-                    adata_id = f"adata{len(ads.adata_dic)}"
-                ads.active = adata_id
-                ads.adata_dic[adata_id] = res              
+            res = run_io_func(ads, name, arguments)
         elif name in pp_tools.keys():
-            res = run_pp_func(ads.adata_dic[ads.active], name, arguments)
+            res = run_pp_func(ads, name, arguments)
         elif name in tl_tools.keys():
-            res = run_tl_func(ads.adata_dic[ads.active], name, arguments) 
+            res = run_tl_func(ads, name, arguments) 
         elif name in pl_tools.keys():
-            res = run_pl_func(ads.adata_dic[ads.active], name, arguments)
-        elif name in util_tools.keys():
-            if name == "merge_adata":
-                from .tool.util import merge_adata                
-                adata = merge_adata(ads.adata_dic)
-                ads.adata_dic = {}
-                ads.active = "merge_adata"
-                ads.adata_dic[ads.active] = adata                   
-            res = run_util_func(ads.adata_dic[ads.active], name, arguments)
+            res = run_pl_func(ads, name, arguments)
+        elif name in util_tools.keys():            
+            res = run_util_func(ads, name, arguments)
         elif name in ccc_tools.keys():            
             res = run_ccc_func(ads.adata_dic[ads.active], name, arguments)
-   
-
         output = str(res) if res is not None else str(ads.adata_dic[ads.active])
         return [
             types.TextContent(
@@ -107,7 +91,6 @@ async def call_tool(
         ]
 
 
-        
 ## Run server with stdio transport
 async def run_stdio():
     """

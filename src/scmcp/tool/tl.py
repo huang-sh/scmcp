@@ -161,7 +161,8 @@ tl_tools = {
     "score_genes_cell_cycle": score_genes_cell_cycle_tool,
 }
 
-def run_tl_func(adata, func, arguments):
+def run_tl_func(ads, func, arguments):
+    adata = ads.adata_dic[ads.active]
     if func not in tl_func:
         raise ValueError(f"Unsupported function: {func}")
     run_func = tl_func[func]

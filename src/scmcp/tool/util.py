@@ -103,16 +103,22 @@ util_tools = {
     "merge_adata": merge_adata_tool,
 }
 
-def run_util_func(adata, func, arguments):
-    # pp_logger.info(f"{func} at {arguments}")
+def run_util_func(ads, func, arguments):
     if func not in util_func:
         raise ValueError(f"不支持的函数: {func}")
+    adata = ads.adata_dic[ads.active]        
     run_func = util_func[func]
     parameters = inspect.signature(run_func).parameters
     kwargs = {k: arguments.get(k) for k in parameters if k in arguments}    
     try:
-        res = run_func(adata, **kwargs)
-        add_op_log(adata, run_func, kwargs)
+        if func == "merge_adata":           
+            res = merge_adata(ads.adata_dic)
+            ads.adata_dic = {}
+            ads.active = "merge_adata"
+            ads.adata_dic[ads.active] = res
+        else:
+            res = run_func(adata, **kwargs)
+            add_op_log(adata, run_func, kwargs)
     except Exception as e:
         logger.error(f"Error running function {func}: {e}")
         raise e
