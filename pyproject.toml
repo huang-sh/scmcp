@@ -1,6 +1,6 @@
 [project]
 name = "scmcp"
-version = "0.1.1"
+dynamic = ["version"] 
 description = "An MCP server for scRNA-Seq analysis with natural language!"
 readme = "README.md"
 license = { file = "LICENSE" }
@@ -29,3 +29,6 @@ dev = [
     "pytest>=8.3.4",
     "leidenalg"
 ]
+
+[tool.hatch.version]
+path = "src/scmcp/__init__.py"  # 指定版本号所在的文件路径

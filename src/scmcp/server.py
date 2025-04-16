@@ -8,6 +8,7 @@ import scanpy as sc
 from .util import get_figure
 from .tool import *
 from .logging_config import setup_logger
+from . import __version__  # 导入版本号
 
 logger = setup_logger(log_file=os.environ.get("SCMCP_LOG_FILE", None))
 
@@ -116,7 +117,7 @@ async def run_stdio():
             write_stream,
             InitializationOptions(
                 server_name=f"scmcp-{MODULE}",
-                server_version="0.1.1",
+                server_version=__version__,  # 使用动态版本号
                 capabilities=server.get_capabilities(
                     notification_options=NotificationOptions(),
                     experimental_capabilities={},
@@ -152,7 +153,7 @@ def create_sse_app(port=8000):
                 streams[0], streams[1], 
                 InitializationOptions(
                     server_name=f"sc-mcp-{MODULE}",
-                    server_version="0.1.1",
+                    server_version=__version__,  # 使用动态版本号
                     capabilities=server.get_capabilities(
                         notification_options=NotificationOptions(),
                         experimental_capabilities={},
