@@ -123,9 +123,8 @@ def run_pp_func(adata, func, arguments):
     
     run_func = pp_func[func]
     parameters = inspect.signature(run_func).parameters
-    kwargs = {k: arguments.get(k) for k in parameters if k in arguments}    
-    if "inplace" in parameters:
-        kwargs["inplace"] = True
+    kwargs["inplace"] = True
+    kwargs = {k: arguments.get(k) for k in parameters if k in arguments}
     try:
         res = run_func(adata, **kwargs)
         add_op_log(adata, run_func, kwargs)
