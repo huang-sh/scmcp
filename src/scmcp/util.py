@@ -59,6 +59,10 @@ def set_fig_path(func, **kwargs):
 
 def savefig(fig, file, format="png"):
     try:
+        # 确保父目录存在
+        file_path = Path(file)
+        file_path.parent.mkdir(parents=True, exist_ok=True)
+        
         if hasattr(fig, 'figure'):  # if Axes
             fig.figure.savefig(file, format=format)
         elif hasattr(fig, 'save'):  # for plotnine.ggplot.ggplot
