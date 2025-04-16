@@ -12,20 +12,24 @@ from . import __version__  # 导入版本号
 
 logger = setup_logger(log_file=os.environ.get("SCMCP_LOG_FILE", None))
 
+
 class AdataState:
     def __init__(self):
-        data_path = os.environ.get("SC_MCP_DATA", None)        
+        data_path = os.environ.get("SC_MCP_DATA", None)
+        self.adata_dic = {}
+        self.active = None
         if data_path:
-            self.adata = sc.read_h5ad(data_path)
-            logger.info(f"Data path: {data_path}")
-        else:            
-            self.adata = None
+            adata0 = sc.read_h5ad(data_path)            
+            self.adata_dic["adata0"] = adata0
+            self.active = "adata0"
+            logger.info(f"Loading data {data_path}")
+
         
 ads = AdataState()
 
-MODULE = os.environ.get("SC_MCP_MODULE", "all")       
+MODULE = os.environ.get("SCMCP_MODULE", "all")       
 
-server = Server(f"scanpy-mcp-{MODULE}")
+server = Server(f"scmcp-{MODULE}")
 
 
 @server.list_tools()
@@ -58,37 +62,35 @@ async def call_tool(
 ):
     try:
         logger.info(f"Running {name} with {arguments}")
-        if name in io_tools.keys():
-            #logger.info(f"Runing {name} at {arguments}")
-            res = run_io_func(ads.adata, name, arguments)
-            ads.adata = res
+        if name in io_tools.keys():            
+            res = run_io_func(ads.adata_dic.get(ads.active, None), name, arguments)
+            adata_id = f"adata{len(ads.adata_dic)}"
+            if name == "read_tool":
+                if arguments.get("sampleid", None) is not None:
+                    adata_id = arguments["sampleid"]
+                else:
+                    adata_id = f"adata{len(ads.adata_dic)}"
+                ads.active = adata_id
+                ads.adata_dic[adata_id] = res              
         elif name in pp_tools.keys():
-            #logger.info(f"Runing {name} at {arguments}")
-            res = run_pp_func(ads.adata, name, arguments)
+            res = run_pp_func(ads.adata_dic[ads.active], name, arguments)
         elif name in tl_tools.keys():
-            res = run_tl_func(ads.adata, name, arguments) 
+            res = run_tl_func(ads.adata_dic[ads.active], name, arguments) 
         elif name in pl_tools.keys():
-            logger.info(f"Runing {name} at ")
-            import base64
-            from mcp.types import ImageContent
-            from mcp.server.fastmcp import Image
-            res = run_pl_func(ads.adata, name, arguments)
-            # try:
-            #     data = base64.b64encode(img).decode()
-            #     res = ImageContent(type="image", data=data, mimeType="image/png")
-            #     return [res]
-            # except Exception as e:
-            #     logger.info(f"Error converting figure to bytes: {e}")
-            #     raise e
-            # return res
-
+            res = run_pl_func(ads.adata_dic[ads.active], name, arguments)
         elif name in util_tools.keys():
-            
-            res = run_util_func(ads.adata, name, arguments)
+            if name == "merge_adata":
+                from .tool.util import merge_adata                
+                adata = merge_adata(ads.adata_dic)
+                ads.adata_dic = {}
+                ads.active = "merge_adata"
+                ads.adata_dic[ads.active] = adata                   
+            res = run_util_func(ads.adata_dic[ads.active], name, arguments)
         elif name in ccc_tools.keys():            
-            res = run_ccc_func(ads.adata, name, arguments)            
+            res = run_ccc_func(ads.adata_dic[ads.active], name, arguments)
+   
 
-        output = str(res) if res is not None else str(ads.adata)
+        output = str(res) if res is not None else str(ads.adata_dic[ads.active])
         return [
             types.TextContent(
                 type="text",

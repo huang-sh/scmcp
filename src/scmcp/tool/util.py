@@ -37,6 +37,13 @@ check_gene_tool = types.Tool(
     inputSchema=VarNamesModel.model_json_schema(),
 )
 
+merge_adata_tool = types.Tool(
+    name="merge_adata",
+    description="merge multiple adata",
+    inputSchema=ConcatAdataModel.model_json_schema(),
+)
+
+
 def mark_var(adata, var_name: str = None, gene_class: str = None, 
              pattern_type: str = None, patterns: str = None):
     if gene_class is not None:
@@ -73,18 +80,27 @@ def list_obs(adata):
 def check_gene(adata, var_names):
     return {v: v in adata.var_names for v in var_names}
 
+
+def merge_adata(adata_dic, **kwargs):
+    import anndata as ad
+    adata =  ad.concat(adata_dic, **kwargs)
+    return adata
+
+
 util_func = {
     "mark_var": mark_var,
     "list_var": list_var,
     "list_obs": list_obs,
     "check_gene": check_gene,
+    "merge_adata": merge_adata,
 }
 
 util_tools = {
     "mark_var": mark_var_tool,
     "list_var": list_var_tool,
     "list_obs": list_obs_tool,  
-    "check_gene": check_gene_tool
+    "check_gene": check_gene_tool,
+    "merge_adata": merge_adata_tool,
 }
 
 def run_util_func(adata, func, arguments):
