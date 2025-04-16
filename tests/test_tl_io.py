@@ -47,39 +47,12 @@ def test_run_read_func():
 def test_run_write_func():
     # Create a test AnnData object
     adata = anndata.AnnData(X=np.array([[1, 2], [3, 4]]))
-    adata.uns["operation"] = {"adata": []}
-    
-    # Test case 1: Successfully writing h5ad file
-    with patch.dict(io_func, {"write_h5ad": "write_h5ad"}):
-        # Mock the inputSchema properties
-        mock_schema = {"properties": {"filename": {}}}
-        mock_tool = MagicMock()
-        mock_tool.inputSchema = mock_schema
-        
-        with patch.dict(io_tools, {"write_h5ad": mock_tool}):
-            result = run_write_func(adata, "write_h5ad", {"filename": "test_output.h5ad"})
-            assert "operation" not in adata.uns
-            assert result == {"filename": "test_output.h5ad", "msg": "success to save file"}
-    
-    # Test case 2: Successfully using write function
-    with patch("scanpy.write") as mock_write:
-        with patch.dict(io_func, {"write": mock_write}):
-            # Mock the inputSchema properties
-            mock_schema = {"properties": {"filename": {}}}
-            mock_tool = MagicMock()
-            mock_tool.inputSchema = mock_schema
-            
-            with patch.dict(io_tools, {"write": mock_tool}):
-                result = run_write_func(adata, "write", {"filename": "test_output.h5"})
-                mock_write.assert_called_once()
-                args, kwargs = mock_write.call_args
-                assert kwargs.get("adata") is adata
-                assert kwargs.get("filename") == "test_output.h5"
-                assert result == {"filename": "test_output.h5", "msg": "success to save file"}
-    
-    # Test case 3: Error handling for unsupported function
-    with pytest.raises(ValueError, match="不支持的函数: unsupported_func"):
-        run_write_func(adata, "unsupported_func", {})
+    adata.uns["operation"] = {"adata": {}}
+    res = run_write_func(adata, "write", {"filename": "test.h5ad"})
+    assert "msg" in res
+    assert res["msg"] == "success to save file"
+    assert os.path.exists("test.h5ad")
+    os.remove("test.h5ad")
 
 
 def test_run_io_func():

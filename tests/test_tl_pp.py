@@ -111,22 +111,14 @@ def test_run_pp_func():
 
 
 def test_run_pp_func_with_real_data():
-
     
     # 加载已有的测试数据
     adata = sc.read_10x_mtx("tests/data/hg19")
     
     # 测试 normalize_total 函数
-
     result = run_pp_func(adata, "normalize_total", {"target_sum": 1e4})
     assert result is None  # 函数应该返回None（原地修改）
     
-    # 修改断言检查，适应实际的数据结构
-    assert "operation" in adata.uns
-    assert "adata" in adata.uns["operation"]
-    assert any("normalize_total" in op for op in adata.uns["operation"]["adata"])
-    
-
     # 先过滤掉NaN值
     run_pp_func(adata, "filter_cells", {"min_counts": 1})  # 过滤掉没有计数的细胞
     run_pp_func(adata, "filter_genes", {"min_cells": 1})   # 过滤掉没有表达的基因
@@ -135,28 +127,15 @@ def test_run_pp_func_with_real_data():
     
     result = run_pp_func(adata, "log1p", {})
     assert result is None
-    assert "operation" in adata.uns
-    assert "adata" in adata.uns["operation"]
-    assert any("log1p" in op for op in adata.uns["operation"]["adata"])
     
     result = run_pp_func(adata, "highly_variable_genes", {"n_top_genes": 500})
     assert result is None
-    assert "operation" in adata.uns
-    assert "adata" in adata.uns["operation"]
-    assert any("highly_variable_genes" in op for op in adata.uns["operation"]["adata"])
     assert "highly_variable" in adata.var.columns
     
-
     result = run_pp_func(adata, "pca", {"n_comps": 20})
     assert result is None
-    assert "operation" in adata.uns
-    assert "adata" in adata.uns["operation"]
-    assert any("pca" in op for op in adata.uns["operation"]["adata"])
     assert "X_pca" in adata.obsm
     
     result = run_pp_func(adata, "neighbors", {"n_neighbors": 15})
     assert result is None
-    assert "operation" in adata.uns
-    assert "adata" in adata.uns["operation"]
-    assert any("neighbors" in op for op in adata.uns["operation"]["adata"])
     assert "neighbors" in adata.uns

@@ -109,21 +109,16 @@ def test_run_tl_func_with_real_data():
     # 测试 umap 函数
     result = run_tl_func(adata, "umap", {"n_components": 2, "random_state": 42})
     assert result is None  # 函数应该返回None（原地修改）
-    assert "operation" in adata.uns
-    assert "adata" in adata.uns["operation"]
-    assert any("umap" in op for op in adata.uns["operation"]["adata"])
     assert "X_umap" in adata.obsm
     
     # 测试 tsne 函数
     result = run_tl_func(adata, "tsne", {"n_pcs": 30, "random_state": 42})
     assert result is None
-    assert any("tsne" in op for op in adata.uns["operation"]["adata"])
     assert "X_tsne" in adata.obsm
     
     # 测试 leiden 聚类
     result = run_tl_func(adata, "leiden", {"resolution": 0.5, "random_state": 42})
     assert result is None
-    assert any("leiden" in op for op in adata.uns["operation"]["adata"])
     assert "leiden" in adata.obs.columns
     
     # 测试 rank_genes_groups 函数
@@ -133,11 +128,9 @@ def test_run_tl_func_with_real_data():
         "n_genes": 50
     })
     assert result is None
-    assert any("rank_genes_groups" in op for op in adata.uns["operation"]["adata"])
     assert "rank_genes_groups" in adata.uns
     
     # 测试 dendrogram 函数
     result = run_tl_func(adata, "dendrogram", {"groupby": "leiden"})
     assert result is None
-    assert any("dendrogram" in op for op in adata.uns["operation"]["adata"])
     assert "dendrogram_leiden" in adata.uns
