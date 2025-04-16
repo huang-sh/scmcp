@@ -6,7 +6,7 @@ from starlette.responses import FileResponse, Response
 def add_op_log(adata, func, kwargs):
     if "operation" not in adata.uns:
         adata.uns["operation"] = {}
-        adata.uns["operation"]["adata"] = []
+        adata.uns["operation"]["adata"] = {}
     
     # Handle different function types to get the function name
     if hasattr(func, "func") and hasattr(func.func, "__name__"):
@@ -19,8 +19,11 @@ def add_op_log(adata, func, kwargs):
     else:
         # Fallback for other cases
         func_name = str(func)
-    
-    adata.uns["operation"]["adata"].append({func_name: kwargs})
+    if not adata.uns["operation"]["adata"]:
+        op_num = "0"
+    else:
+        op_num = str(int(list(adata.uns["operation"]["adata"].keys())[-1])+1)
+    adata.uns["operation"]["adata"][op_num] = {func_name: kwargs}
 
 
 def set_fig_path(func, **kwargs):
