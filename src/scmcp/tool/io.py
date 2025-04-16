@@ -89,7 +89,6 @@ io_func = {
     "read_h5ad": sc.read_h5ad,
     "read_text": read_text_func,
     "write": sc.write,
-    "write_h5ad": "write_h5ad",
 }
 
 io_tools = {
@@ -97,7 +96,6 @@ io_tools = {
     "read_10x_h5": read_10x_h5,
     "read_10x_mtx": read_10x_mtx,
     "read_text": read_text,
-    "write_h5ad": write_h5ad,
     "write": write,
 }
 
@@ -132,14 +130,10 @@ def run_write_func(adata, func, arguments):
     
     field_keys = io_tools.get(func).inputSchema["properties"].keys()
     kwargs = {k: arguments.get(k) for k in field_keys if k in arguments}
-    
-    if func == "write_h5ad":
-        del adata.uns["operation"]
-        return {"filename": kwargs["filename"], "msg": "success to save file"}
-    else:
-        kwargs["adata"] = adata
-        sc.write(**kwargs)
-        return {"filename": kwargs["filename"], "msg": "success to save file"}
+
+    kwargs["adata"] = adata
+    sc.write(kwargs["filename"], adata)
+    return {"filename": kwargs["filename"], "msg": "success to save file"}
 
 
 def run_io_func(adata, func, arguments):
