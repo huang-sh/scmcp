@@ -57,6 +57,7 @@ def run_ccc(adata, method, **kwargs):
     filtered_kwargs = {k: kwargs.get(k) for k in parameters if k in kwargs}
     # filtered_kwargs["key_added"] = f"{method}_res"
     method_func(adata, **filtered_kwargs)
+    add_op_log(adata, method_func, filtered_kwargs)
     return adata
 
 
@@ -122,7 +123,7 @@ def run_ccc_func(adata, func, arguments):
             method = arguments.get("method", "cellphonedb")
             method_args = {k: v for k, v in arguments.items() if k != "method"}
             res = run_func(adata, method, **method_args)
-            add_op_log(adata, method, method_args)
+            
         elif "plot" in func:
             from ..util import savefig
             ax = run_func(adata, **arguments)
