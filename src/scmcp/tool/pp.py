@@ -123,7 +123,7 @@ def run_pp_func(adata, func, arguments):
     
     run_func = pp_func[func]
     parameters = inspect.signature(run_func).parameters
-    kwargs["inplace"] = True
+    arguments["inplace"] = True
     kwargs = {k: arguments.get(k) for k in parameters if k in arguments}
     try:
         res = run_func(adata, **kwargs)
