@@ -88,11 +88,3 @@ def run_cli():
     else:
         print(f"Unknown command: {args.command}")
         sys.exit(1)
-
-# This is the entry point defined in pyproject.toml
-def run():
-    """Entry point function, called by scmcp command"""
-    run_cli()
-
-if __name__ == "__main__":
-    run_cli()
