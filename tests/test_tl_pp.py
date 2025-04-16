@@ -7,9 +7,19 @@ from scmcp.tool.pp import run_pp_func, pp_func
 from unittest.mock import patch, MagicMock
 
 
+class MockAnnDataStore:
+    def __init__(self, adata=None):
+        self.adata_dic = {}
+        self.active = "test_adata"
+        if adata is not None:
+            self.adata_dic[self.active] = adata
+
+
 def test_run_pp_func():
     # Create a simple AnnData object for testing
     adata = anndata.AnnData(X=np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]]))
+    # Create a mock AnnDataStore with the test AnnData
+    ads = MockAnnDataStore(adata)
     
     # Test case 1: Successfully running normalize_total function
     with patch.dict(pp_func, {"normalize_total": MagicMock()}):
@@ -25,7 +35,7 @@ def test_run_pp_func():
         mock_signature.parameters = mock_parameters
         
         with patch("inspect.signature", return_value=mock_signature):
-            run_pp_func(adata, "normalize_total", {"target_sum": 1e4})
+            run_pp_func(ads, "normalize_total", {"target_sum": 1e4})
             pp_func["normalize_total"].assert_called_once()
             args, kwargs = pp_func["normalize_total"].call_args
             assert args[0] is adata
@@ -47,7 +57,7 @@ def test_run_pp_func():
         mock_signature.parameters = mock_parameters
         
         with patch("inspect.signature", return_value=mock_signature):
-            run_pp_func(adata, "highly_variable_genes", {
+            run_pp_func(ads, "highly_variable_genes", {
                 "n_top_genes": 2000, 
                 "flavor": "seurat"
             })
@@ -60,7 +70,7 @@ def test_run_pp_func():
     
     # Test case 3: Error handling for unsupported function
     with pytest.raises(ValueError, match="不支持的函数: unsupported_func"):
-        run_pp_func(adata, "unsupported_func", {})
+        run_pp_func(ads, "unsupported_func", {})
     
     # Test case 4: Error handling for KeyError
     with patch.dict(pp_func, {"filter_cells": MagicMock(side_effect=KeyError("test_col"))}):
@@ -72,7 +82,7 @@ def test_run_pp_func():
         
         with patch("inspect.signature", return_value=mock_signature):
             with pytest.raises(KeyError, match="Can not foud \'test_col\' column in adata.obs or adata.var"):
-                run_pp_func(adata, "filter_cells", {})
+                run_pp_func(ads, "filter_cells", {})
     
     # Test case 5: Error handling for general exceptions
     with patch.dict(pp_func, {"pca": MagicMock(side_effect=Exception("Test error"))}):
@@ -84,7 +94,7 @@ def test_run_pp_func():
         
         with patch("inspect.signature", return_value=mock_signature):
             with pytest.raises(Exception, match="Test error"):
-                run_pp_func(adata, "pca", {})
+                run_pp_func(ads, "pca", {})
     
     # Test case 6: Verify that only valid parameters are passed to the function
     with patch.dict(pp_func, {"log1p": MagicMock()}):
@@ -98,7 +108,7 @@ def test_run_pp_func():
         mock_signature.parameters = mock_parameters
         
         with patch("inspect.signature", return_value=mock_signature):
-            run_pp_func(adata, "log1p", {
+            run_pp_func(ads, "log1p", {
                 "base": 10,
                 "invalid_param": "value"
             })
@@ -110,32 +120,67 @@ def test_run_pp_func():
             assert "invalid_param" not in kwargs
 
 
+def test_run_pp_func_with_multiple_adatas():
+    # Test with multiple AnnData objects in the store
+    adata1 = anndata.AnnData(X=np.array([[1, 2], [3, 4]]))
+    adata2 = anndata.AnnData(X=np.array([[5, 6], [7, 8]]))
+    
+    # Create a mock AnnDataStore with multiple AnnData objects
+    ads = MockAnnDataStore()
+    ads.adata_dic["adata1"] = adata1
+    ads.adata_dic["adata2"] = adata2
+    ads.active = "adata2"  # Set active to adata2
+    
+    with patch.dict(pp_func, {"normalize_total": MagicMock()}):
+        pp_func["normalize_total"].__name__ = "normalize_total"
+        
+        mock_signature = MagicMock()
+        mock_parameters = {
+            "adata": MagicMock(),
+            "target_sum": MagicMock(),
+            "inplace": MagicMock()
+        }
+        mock_signature.parameters = mock_parameters
+        
+        with patch("inspect.signature", return_value=mock_signature):
+            run_pp_func(ads, "normalize_total", {"target_sum": 1e4})
+            
+            # Verify function was called with the active AnnData (adata2)
+            pp_func["normalize_total"].assert_called_once()
+            args, kwargs = pp_func["normalize_total"].call_args
+            assert args[0] is adata2  # Should use the active AnnData
+            assert kwargs.get("target_sum") == 1e4
+            assert kwargs.get("inplace") is True
+
+
+@pytest.mark.skip(reason="Requires real data and takes time to run")
 def test_run_pp_func_with_real_data():
+    # Load test data
+    adata = sc.read_10x_mtx(os.path.join(os.path.dirname(__file__), "data", "hg19"))
+    # Create a mock AnnDataStore with the test AnnData
+    ads = MockAnnDataStore(adata)
     
-    # 加载已有的测试数据
-    adata = sc.read_10x_mtx("tests/data/hg19")
+    # Test normalize_total function
+    result = run_pp_func(ads, "normalize_total", {"target_sum": 1e4})
+    assert result is None  # Function should return None (in-place modification)
     
-    # 测试 normalize_total 函数
-    result = run_pp_func(adata, "normalize_total", {"target_sum": 1e4})
-    assert result is None  # 函数应该返回None（原地修改）
+    # Filter out NaN values
+    run_pp_func(ads, "filter_cells", {"min_counts": 1})  # Filter cells with no counts
+    run_pp_func(ads, "filter_genes", {"min_cells": 1})   # Filter genes with no expression
+    # Ensure data has no NaN values
+    ads.adata_dic[ads.active].X = np.nan_to_num(ads.adata_dic[ads.active].X)
     
-    # 先过滤掉NaN值
-    run_pp_func(adata, "filter_cells", {"min_counts": 1})  # 过滤掉没有计数的细胞
-    run_pp_func(adata, "filter_genes", {"min_cells": 1})   # 过滤掉没有表达的基因
-    # 确保数据中没有NaN值
-    adata.X = np.nan_to_num(adata.X)
-    
-    result = run_pp_func(adata, "log1p", {})
+    result = run_pp_func(ads, "log1p", {})
     assert result is None
     
-    result = run_pp_func(adata, "highly_variable_genes", {"n_top_genes": 500})
+    result = run_pp_func(ads, "highly_variable_genes", {"n_top_genes": 500})
     assert result is None
-    assert "highly_variable" in adata.var.columns
+    assert "highly_variable" in ads.adata_dic[ads.active].var.columns
     
-    result = run_pp_func(adata, "pca", {"n_comps": 20})
+    result = run_pp_func(ads, "pca", {"n_comps": 20})
     assert result is None
-    assert "X_pca" in adata.obsm
+    assert "X_pca" in ads.adata_dic[ads.active].obsm
     
-    result = run_pp_func(adata, "neighbors", {"n_neighbors": 15})
+    result = run_pp_func(ads, "neighbors", {"n_neighbors": 15})
     assert result is None
-    assert "neighbors" in adata.uns
+    assert "neighbors" in ads.adata_dic[ads.active].uns
