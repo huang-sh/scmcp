@@ -1,3 +1,8 @@
+> ⚠️ **Important Notice**: This repository is no longer maintained. Please visit [SCMCPHub](https://github.com/scmcphub) for the latest version of MCP servers.
+
+SCMCP is a powerful Machine Conversation Protocol (MCP) server designed specifically for single-cell RNA sequencing (scRNA-Seq) analysis. It enables users to perform complex scRNA-Seq analyses using natural language commands, making bioinformatics more accessible to researchers without extensive programming experience.
+
+
 # SCMCP
 
 An MCP server for scRNA-Seq analysis  with natural language!
