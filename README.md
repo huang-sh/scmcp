@@ -3,7 +3,11 @@
 
 # SCMCP
 
-An MCP server for scRNA-Seq analysis  with natural language!
+An MCP server for scRNA-Seq analysis with natural language!
+
+<a href="https://glama.ai/mcp/servers/@huang-sh/scmcp">
+  <img width="380" height="200" src="https://glama.ai/mcp/servers/@huang-sh/scmcp/badge" alt="SCMCP MCP server" />
+</a>
 
 ## 🪩 What can it do?
 
